@@ -24,7 +24,7 @@ double stdev(int a, double c[]){
     s+=square(c[i]);
   }
   s/=a;
-  return sqrt((s-square(med(a,c)))/(a-1));
+  return sqrt((s-square(med(a,c))));
 }
 
 
@@ -65,7 +65,7 @@ int main(){
   
   //media ed errore naive
   
-  cout << med(all, col1) << " " << stdev(all, col1) << endl;
+  cout << med(all, col1) << " " << stdev(all, col1)/sqrt(all-1) << endl;
   
   //faccio il jackknife resampling
   
@@ -85,7 +85,7 @@ int main(){
  
  //calcolo la media e l'errore sui nuovi campioni
  
- cout << med(numjack,jk) << " " << (stdev(numjack,jk)*(numjack-1)) << endl;
+ cout << med(numjack,jk) << " " << (stdev(numjack,jk)*sqrt(numjack-1)) << endl;
  
   return 0;
 }
