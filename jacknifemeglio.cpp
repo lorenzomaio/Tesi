@@ -6,9 +6,23 @@
 
 using namespace std;
 
+//funzione che restituisce il quadrato di un double
+
 double square(double m){
   return m*m;
 }
+
+//funzione che restituisce il puntatore ad un array i cui elementi sono dati dal quadrato degli elementi dell'array inserito come argomento
+
+double square_arr[]={0};
+double *array_square(int a, double c[]){;
+  for (int i=0; i<a; i+=1){
+   square_arr[i]=square(c[i]);
+  }
+  return square_arr;
+}
+
+//funzione che restituisce la media degli elementi dell'array inserito come secondo argomento; l'intero da inserire come primo argomento è il numero degli elementi dell'array
 
 double med(int a, double c[]){
   double s=0;
@@ -18,6 +32,8 @@ double med(int a, double c[]){
   return s/ a;
 }
 
+//funzione che restituisce la deviazione standard degli elementi dell'array inserito come secondo argomento; l'intero da inserire come primo argomento è il numero degli elementi dell'array
+
 double stdev(int a, double c[]){
   double s=0;
   for(int i=0; i<a; i+=1){
@@ -26,16 +42,17 @@ double stdev(int a, double c[]){
   s/=a;
   return sqrt((s-square(med(a,c))));
 }
-
+//parametri del programma
+int const all=100, numjack=100;
 
 int main(){
-  double col1[100];
-  //double col2[100];
-  //double col3[100];
+  
+  //genero l'array prendendo i dati dalla prima colonna di un file di input
+  
+  double col1[all];
   ifstream ifile("test.txt");
-  // controllo se il file è stato aperto correttamente
-  if(ifile.fail()){cout << "bestia\n"; return 1;}
-  // adesso voglio che i dati della prima riga siano messi come componenti 0 dei miei vettori.
+  if(ifile.fail()){cout << "file non aperto\n"; return 1;}
+  //i dati della prima riga siano messi come componenti 0 dei miei vettori.
   string line;
   int i = 0;
   int j = 1;
@@ -57,16 +74,16 @@ int main(){
   }
   ifile.close();
   
-  int const all=100, numjack=10;
   
   //apro file di output
   ofstream ofile("jacknifemed.txt");
-  if(ofile.fail()){cout << "bestia\n"; return 1;}
+  if(ofile.fail()){cout << "file non aperto\n"; return 1;}
   
   //media ed errore naive
-  
-  cout << med(all, col1) << " " << stdev(all, col1)/sqrt(all-1) << endl;
-  
+  double naive_med, naive_err;
+  naive_med=med(all,col1);
+  naive_err=stdev(all,col1);
+  //cout << naive_med  << " " << naive_err << endl;
   //faccio il jackknife resampling
   
   double jk[numjack], sum[numjack];
@@ -84,8 +101,29 @@ int main(){
  }
  
  //calcolo la media e l'errore sui nuovi campioni
+ double jk_med, jk_err;
+ jk_med=med(numjack,jk);
+ jk_err=stdev(numjack,jk)*sqrt(numjack-1);
+ //cout << jk_med << " " << jk_err << endl;
  
- cout << med(numjack,jk) << " " << (stdev(numjack,jk)*sqrt(numjack-1)) << endl;
+ //la funzione che voglio studiare è f(x)=x^2. Costruisco un array dato dal quadrato di col1 ed uno dato dal quadrato di jk
+ 
+ double scol1[all], sjk[numjack];
+ 
+ for(int i=0; i<all; i+=1){
+   scol1[i] =*(array_square(all, col1)+i);
+ }
+ for(int i=0; i<numjack; i+=1){
+   sjk[i] =*(array_square(numjack, jk)+i);
+ }
+ 
+ //dal seguente cout si vede che la media fatta con il resampling jacknife approssima meglio <x>^2 rispetto alla media sui valori originali al quadrato,
+ //quest'ultima, infatti, presenta un bias che non si riduce per N-->infty; quella ottenuta con il resampling, invece, per N grande si avvicina sempre più
+ //ad f(X) +/- err(f(X)) dove l'erore è calcolato con la formula di propagazione degli errori.
+ 
+ cout << "media naive = " << med(all, scol1) << " +/- " << stdev(all,scol1)/sqrt((double)all-1) << " questo è il calcolo di media ed errore sul quadrato dei dati iniziali" << endl
+      << "media jackknife = " << med(numjack, sjk) << " +/- " << stdev(numjack,sjk)*sqrt((double)numjack-1) << " questo è calcolato con il metodo jackknife" << endl
+      << "f(X) = " << square(naive_med) << " +/- " << 2*naive_med*naive_err/sqrt((double)all-1) << " questo è calcolato con la propagazione degli errori" << endl;
  
   return 0;
 }
