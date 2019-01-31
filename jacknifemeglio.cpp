@@ -12,14 +12,13 @@ double square(double m){
   return m*m;
 }
 
-//funzione che restituisce il puntatore ad un array i cui elementi sono dati dal quadrato degli elementi dell'array inserito come argomento
+//funzione che restituisce il puntatore ad un array i cui elementi sono date dal quadrato degli elementi dell'array inserito come argomento
 
 double square_arr[]={0};
-double *array_square(int a, double c[]){;
+void array_square(int a, double c[]){;
   for (int i=0; i<a; i+=1){
    square_arr[i]=square(c[i]);
   }
-  return square_arr;
 }
 
 //funzione che restituisce la media degli elementi dell'array inserito come secondo argomento; l'intero da inserire come primo argomento è il numero degli elementi dell'array
@@ -109,12 +108,13 @@ int main(){
  //la funzione che voglio studiare è f(x)=x^2. Costruisco un array dato dal quadrato di col1 ed uno dato dal quadrato di jk
  
  double scol1[all], sjk[numjack];
- 
+ array_square(all, col1);
  for(int i=0; i<all; i+=1){
-   scol1[i] =*(array_square(all, col1)+i);
+   scol1[i] =square_arr[i];
  }
+ array_square(numjack, jk);
  for(int i=0; i<numjack; i+=1){
-   sjk[i] =*(array_square(numjack, jk)+i);
+   sjk[i] =square_arr[i];
  }
  
  //dal seguente cout si vede che la media fatta con il resampling jacknife approssima meglio <x>^2 rispetto alla media sui valori originali al quadrato,
