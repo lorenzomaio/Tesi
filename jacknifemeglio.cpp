@@ -12,7 +12,7 @@ double square(double m){
   return m*m;
 }
 
-//funzione che restituisce il puntatore ad un array i cui elementi sono date dal quadrato degli elementi dell'array inserito come argomento
+//funzione che eleva al quadrato le componenti di un array e le mette dentro la variabile globale square_arr
 
 double square_arr[]={0};
 void array_square(int a, double c[]){;
