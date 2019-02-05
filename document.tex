@@ -1,0 +1,322 @@
+% !TeX spellcheck = en_GB
+\documentclass[LaM]{sapthesis}
+\usepackage{tikz-feynman}
+\usepackage{braket}
+\usepackage{SIunitx}
+\usepackage[italian]{babel}
+\begin{document}
+%	\maketitle
+	\chapter{Contesto}
+	Il soggetto del presente lavoro di tesi è il calcolo, attraverso simulazioni su reticolo, di una classe di diagrammi di Feynman, detti \emph{disconnessi}, che si presentano nello studio degli effetti di QED nei processi adronici. Il metodo generale per la rimozione delle interferenze infrarosse che si presentano nei passaggi intermedi, applicato al calcolo delle correzioni elettromagnetiche alle rate di decadimento di mesoni carichi in leptoni, è stato presentato per la prima volta in [\color{green}{articolo QED Corrections to Hadronic Processes in Lattice QCD}\color{black}] e verrà brevemente descritto. Nonostante questa serie di processi per il calcolo delle correzioni elettromagnetiche sia stato applicato esplicitamente ai decadimenti leptonici dei meosni pseudoscalari carichi, essi hanno valenza generale e possono essere applicati anche per i calcoli riguardanti altri processi.
+	
+	Il processo di interesse, a livello albero, è $P^+\to l^+\nu_l$, la cui ampiezza chiameremo $\Gamma_0$. In assenza di elettromagnetismo, gli effetti della QCD su $\Gamma_0$ sono tutti contenuti nella costante di decadimento $f_P$ del mesone, definita da
+%Questo pezzo è un po' tanto scopiazzato dall'articolo QED Correction to blabla ma sto solo scrivendo quello che ho capito, poi vedo di renderlo un po' più personale
+	\begin{equation}
+	\braket{0|\bar{q_1}\gamma^\mu\gamma^5q_2|P^+(p)}=ip^\mu f_P
+	\end{equation}
+	dove $q_1$ e $q_2$ sono i campi dei quark di valenza di $P^+$. Negli anni, sono state calcolate le costanti di decadimento di molti mesoni pseudoscalari e, ormai da tempo, 
+	%? lo so che non ha senso scrivere cose così, ma, come detto, ora sintetizzo poi sistemo%
+	si è raggiunta una precisione di $O(1\%)$ e, al fine di ottenere misure di precisione, è necessario includere gli effetti di \emph{rottura di isospin}, comprese le correzioni elettromagnetiche, in $\Gamma_0$, che, a causa delle divergenze infrarosse, cessa di essere una quantità di per sé osservabile.
+	
+	Al fine di ottenere quantità fisiche, la rate di decadimento  $\Gamma_0$, in cui le correzioni elettromagnetiche compaiono solo come fotoni virtuali, devono essere calcolate anche le rate di decadimento di $P^+\to l^+\nu_l\gamma^n$ che indicheremo con $\Gamma_n(\Delta E)$, dove $n$ è il numero di fotoni nello stato finale (che dipende dall'ordine dello sviluppo perturbativo di $\Gamma_0$ in $\alpha_{em}$) e $\Delta E$ indica che tale quantità viene calcolata integrando l'energia dei fotoni nello stato finale da $0$ a $\Delta E$. In tal modo, come osservato nel 1937 da Bloch e Nordsieck, le divergenze infrarosse nella quantità
+	$$
+	\Gamma(\Delta E) = \Gamma_0 + \Gamma_1(\Delta E) + ... + \Gamma_n(\Delta E)
+	$$
+	si cancellano quando ogni rate è calcolata all'ordine $\alpha_{em}^n$. Poiché ci focalizzeremo solo sulle correzioni di $O(\alpha_{em})$, la quantità fisica di interesse sarà
+	$$
+	\Gamma(\Delta E) = \Gamma_0+\Gamma_1(\Delta E).
+	$$
+	Sperimentalmente, $\Gamma(\Delta E)$ corrisponde alla rate del processo di decadimento leptonico del mesone pseudoscalare in cui lo stato finale può essere $l^+\nu_l$ o $l^+\nu_l\gamma$ in cui l'energia massima del fotone nello stato finale è $\Delta E$.
+	
+	La scelta di $\Delta E$, dalla quale dipenderà ovviamente il valore di $\Gamma(\Delta E)$, è un passaggio delicato. È possibile, per energie del fotone dello stato finale sufficientemente basse, calcolare $\Gamma_1(\Delta E)$ perturbativamente, trattando il mesone come una particella elementare nella \emph{pointlike approximation}; al contempo, però, $\Delta E$ deve essere sufficientemente grande perché il fotone dello stato finale sia sperimentalmente osservabile (questo dipende dalla risoluzione dei rivelatori a disposizione). Per via di queste considerazioni, si lavora con 
+	$\Delta E=O(\numrange{10}{20} \si{\mega\electronvolt})$
+	. L'approssimazione di considerare il mesone come una particella puntiforme introduce un errore stimabile [\color{green}fatto sempre in QED Corrections to Handronic Peocesses in Lattice QCD\color{black}].
+	
+	La possibilità di calcolare $\Gamma_1(\Delta E)$ in teoria delle perturbazioni alleggerisce il lavoro, perché se lo si facesse tramite simulazioni su reticolo, \color{red} qual è esattamente la difficoltà di calcolare i diagrammi con un fotone come gamba esterna? L'articolo dice che è perché si dovrebbe eseguire il conto per tutti i possibili valori dell'energia del fotone e il fatto che gli impulsi possibili sono discreti comporta che il volume deve essere scelto appropriatamente. Non mi è molto chiaro\color{black}. Tuttavia $\Gamma_0$ deve essere necessariamente calcolato tramite simulazioni su reticolo: questo comporta, perché in $\Gamma(\Delta E)$ le divergenze si annullino, la necessità di un passaggio intermedio. Il metodo proposto è quello di calcolare la rate fisica come
+	\begin{equation}
+	\label{Metodo}
+	\Gamma(\Delta E) = \lim_{V\to \infty}(\Gamma_0 -\Gamma_0^{pt})+\lim_{V\to \infty}(\Gamma_0^{pt} +\Gamma_1^{pt})
+	\end{equation}
+	dove $V$ è il volume del reticolo e $\Gamma_0^{pt}$ è la rate del processo $P^+\to l^+\nu_l$ calcolata perturbativamente in \emph{pointlike approximation} a $O(\alpha_{em})$. I contributi provenienti dai piccoli momenti a $\Gamma_0$ e $\Gamma_0^{pt}$ sono uguali e quindi ognuno dei due termini di \eqref{Metodo} è di per se finito e questo ci permette di trattarli separatamente. Il termine $\Gamma_0^{pt} +\Gamma_1^{pt}$ è calcolato in teoria delle perturbazioni direttamente in volume infinito, mentre gli effetti di QCD in $\Gamma_0$ sono calcolati stocasticamente in una simulazione su reticolo ed il fotone virtuale è incluso esplicitamente nella gauge di Feynman. Per ogni momento del fotone questo è combinato con $\Gamma_0^{pt}$, \color{red}la differenza è sommata sui momenti e infine si prende il limite $V\to\infty$\color{black}.
+	
+	Focalizziamoci sul primo dei due termini di \eqref{Metodo}. La prima importante semplificazione riguarda il contributo alla rate di decadimento proveniente dalla rinormalizzazione elettromagnetica della funzione d'onda del leptone nello stato finale: non vi è differenza se viene calcolato perturbativamente o non perturbativamente, quindi scompare nella differenza $\Gamma_0 -\Gamma_0^{pt}$. Perciò il calcolo della parte non perturbativa di \eqref{Metodo} ad $O(\alpha_{em})$ si riduce al calcolo di
+	\begin{equation*}
+	\Gamma_0^{\alpha_{em}}-\Gamma_0^{pt,\alpha_{em}}
+	\end{equation*}
+	dove l'indice $\alpha_{em}$ indica che queste grandezze si calcolano considerando tutti gli effetti elettromagnetici eccetto quello della rinormalizzazione della funzione d'onda del leptone finale.
+	
+	Il contributo a livello albero è dato semplicemente dal calcolo della funzione di correlazione rappresentata da (\color{blue} devo imparare a fare i diagrammi di Feynman, comunque questo è quello tree-level del decadimento del pione (no pointlike approximation)\color{black}). L'ampiezza è data semplicementre da:
+	\begin{equation}
+		\bar{u}_{\nu_l  \alpha} (p_{\nu_l}) \ (M_0)_{\alpha\beta} \ v_{l  \beta}(p_l) = \frac{iG_Ff_P}{\sqrt{2}}V^*_{ud} \ p^\nu_p \ [\bar{u}_{\nu_l} (p_{\nu_l})\gamma_\nu(1-\gamma^5)v_l(p_l)]
+	\end{equation}.
+	In questa equazione, ${u}_{\nu_l}$ e $v_l$ sono gli spinori dei leptoni ed $f_\pi$ è calcolata sul reticolo.
+	
+	I contributi al primo ordine nella costante di accoppiamento elettromagnetica al decadimento senza fotoni reali sono mostrati nelle seguenti figure (\color{green} diagrammi di Feynman connessi e disconnessi mostrati nell'articolo\color{black}). Vediamo che possono essere suddivisi in due tipi: quelli \emph{connessi} e quelli \emph{disconnessi} (che saranno, per l'appunto, oggetto del presente lavoro). In teoria è ben noto che, nei calcoli perturbativi delle ampiezze di probabilità, diagrammi sconnessi come quelli mostrati in figura non danno contributo (essi sono cancellati, nel formalismo dell'integrale generatore, dalla divisione per $Z_0$ che contiene tutti i contributi di tipo vuoto-vuoto); tuttavia stiamo calcolando queste grandezze non perturbativamente, questo vuol dire che un infinito numero di gluoni scambiati è sottinteso in tutti questi diagrammi, perciò anche i diagrammi disconnessi danno in realtà un contributo non nullo e le corrispondenti funzioni di correlazione vanno calcolate. La presenza della corrente elettromagnetica e del propagatore del fotone in questi diagrammi richiede l'introduzione di metodi per l'alleggerimento del calcolo che non erano necessari per l'ampiezza tree-level e che saranno approfonditi nel seguito.
+	
+	\color{magenta} Questo pezzo era solo per dare un po' di contesto al seguito della discussione, non so se sia opportuno farlo e quanto siano pertinenti i pezzi che parlano delle ampiezze che non mi riguardano.\color{black}
+	
+	\chapter{LQCD}
+	\color{blue} Devo inserire la discretizzazione della QCD e come si calcolano le ampiezze su reticolo, ma per ora scrivo come si calcolano le ampiezze dei diagrammi con lo scambio di un fotone, poi a sta parte ci penso. Dalla tesi di Lubicz posso prendere i propagatori sequenziali, che non mi ricordo se erano descritti anche in quella di Sanfilippo.\color{black}
+	\chapter{Come si calcolano i diagrammi}
+	\color{green}(per scrivere questa parte mi sono ispirato a, per non dire che ho copiato, l'appendice A dell'articolo arXiv:1704.06561v2 [hep-lat] 11 Jun 2017)\color{black} Si considerino i diagrammi con lo scambio di un fotone tra linee di quark \color{blue}(diagrammi)\color{black} per un operatore bilineare $\bar{\psi}\Gamma\psi$, dove $\Gamma$ rappresenta le 16 matrici di Dirac e le $\psi$ i campi fermionici. La funzione di correlazione sarà:
+	\begin{equation}
+		C^\alpha(t)=\sum_{\vec{x},y_1,y_2}\braket{S(0;y_1)V_\mu(y_1)S(y_1;\vec{x},t)\Gamma S(\vec{x},t;y_2)V_\nu(y_2)S(y_2;0)\Gamma}G_{\mu\nu}(y_1,y_2).
+	\end{equation}
+	La somma su $y_1$ e $y_2$ ha un costo che scala come $V^2$. \color{red}Questo perché, per ogni configurazione di gauge, dovremmo fare una somma su tutti i possibili $y_1$ e $y_2$, cosa che, introducendo i campi stocastici e i propagatori sequenziali, possiamo risparmiarci. O meglio, lo faremo una sola volta per tutte, quindi risolverà il problema del costo di calcolo. Inoltre, senza i propagatori sequenziali, dovremmo calcolarci 4 propagatori dei quark in questo schema, ma adesso vedremo che si riduranno a 2 e i fotoni saranno già compresi!\color{black} \ Vediamo come si affrontava in passato questo problema per poi spiegare il metodo improved che si usa attualmente.
+	
+	Si può dividere la funzione di correlazione in due parti, ognuna che scala come V, introducendo i campi stocastici
+	\begin{equation*}
+		\eta_\mu(x)=\pm1 \ \forall\mu,x
+	\end{equation*}
+	la cui proprietà è:
+	\begin{equation}
+		\lim_{n\to \infty} \frac{1}{n}\sum_{i=1}^{n}\eta^i_\mu(x)\eta^i_\nu(y)=\delta_{\mu\nu}\delta(x,y),
+	\end{equation}
+	dove l'indice $i$ corre sulle possibili configurazioni stocastiche dei campi. \color{brown}La proprietà è chiara perché, per $n\to\infty$ solo il prodotto di due campi che assumono lo stesso valore in ogni configurazione avrà media non nulla e uguale ad 1; e, poiché le componenti dei campi assumono valore $\pm1$ in maniera stocastica, questo avviene solo quando il prodotto di cui si sta calcolando la media sulle configurazioni coincide con il quadrato di una componente.\color{black} \ Questo ci permette di scrivere il propagatore del fotone come:
+	\begin{equation}
+		G_{\mu\nu}(y_1,y_2)=\lim_{n\to \infty} \frac{1}{n}\sum_{i=1}^{n}\phi^i_\mu(y_1)\eta^i_\nu(y_2),
+	\end{equation}
+	dove
+	\begin{equation*}
+		\phi^i_\mu=\sum_{y_3} G_{\mu\rho}(y_1,y_3)\eta^i_\rho(y_3).
+	\end{equation*}
+	Sfruttando questa definizione per il propagatore del fotone, la proprietà $\gamma^5S^\dagger\gamma^5=S$ del propagatore fermionico e la ciclicità della traccia, possiamo scrivere:
+	\begin{equation}
+	\label{C^alpha}
+		C^\alpha(t)=\lim_{n\to \infty} \frac{1}{n}\sum_{i=1}^{n}\sum_{\vec{x},\mu, \nu}\braket{S^{V_\mu\phi_\mu^i\dagger}(\vec{x},t;0)\gamma^5\Gamma S^{V_\nu\eta_\nu^i}(\vec{x},t;0)\Gamma\gamma^5},
+	\end{equation}
+	dove
+	\begin{equation}
+	\label{sequenziale}
+		S^{V_\mu f_\mu}(\vec{x},t;0)_{\nu\rho}^{a b; \ \alpha \beta}=\sum_yS(\vec{x},t;y)_{\nu\lambda}^{a c; \ \alpha \gamma}V_\mu(y)^{\gamma \delta}f_\mu(y)S(y;0)_{\lambda\rho}^{c b; \ \delta \beta}
+	\end{equation}
+	Qui, e dove si ritrova la stessa notazione, gli indici latini in alto rappresentano corrono sui colori, gli indici greci in alto sono quelli di spin e i pedici greci sono le componenti quadrivettoriali; su tutti gli indici ripetuti è effettuata la somma, tranne che su $\mu$, dove la somma è indicata esplicitamente nella \eqref{C^alpha}. Questo oggetto viene chiamato propagatore sequenziale, possiamo vedere come la corrente vettoriale $V_\mu$ sia stata inserita su tutti i possibili punti (infatti c'è la somma su $Y$) della linea del quark. Il calcolo di questo oggetto non è molto più costoso di quello che si fa per il propagatore del quark senza inserzioni di correnti ($S(z,0)$)ed il metodo è lo stesso, vediamo come.
+	
+	La funzione a due punti di un quark si calcola tramite inversione numerica della matrice fermionica $\Delta_{\mu\nu}^{a b; \ \alpha \beta}(x-y)$, ovvero si cerca numericamente quella matrice $S(y-z)$ tale che:
+	\begin{equation}
+	\label{inversionesemplice}
+		\Delta_{\mu\nu}^{a b; \ \alpha \beta}(x-y) S(y-z)_{\nu\rho}^{b c; \ \beta \gamma}=\delta_{\mu\rho}\delta_{ac}\delta(x-z)
+	\end{equation}
+	Le enormi dimensioni della matrice fermionica rendono questo conto davvero pesante, e si fa seguendo degli algoritmi (\color{red}spiegato bene nella tesi di Lubicz, almeno quello che si usava negli anni Novanta, adesso questi robi come li calcoliamo? Questa parte quindi è da completare, nonché da sistemare. Magari questa spiegazione la posso mettere nel capitolo precedente in cui spiego la QCD su reticolo, poi vedo. Ora voglio arrivare a scrivere come si calcolano gli operatori sequenziali\color{black}). Per quanto riguarda l'operatore sequenziale, formalmente si può fare la stessa cosa, infatti l'operatore definito in \eqref{sequenziale} verifica la seguente
+	\begin{equation}
+		\Delta_{\lambda\nu}^{a b; \ \alpha \beta}(x-y)	S^{V_\mu f_\mu}(\vec{y},t_y;0)_{\nu\rho}^{b c; \ \beta \gamma}=V_\mu(x)^{\alpha\delta} f_\mu(x)S(x;0)_{\lambda\rho}^{a c; \ \delta \gamma}.
+	\end{equation}
+	(\color{red}GLI INDICI SONO GIUSTI? ME LO CHIEDO SIA PER QUESTA CHE PER LA \eqref{sequenziale}\color{black})
+	In questa equazione, $S(x;0)_{\mu\rho}^{a c; \ \alpha \gamma}$ viene calcolato come nella \eqref{inversionesemplice}. Una volta che questo viene ricavato, possiamo direttamente inserirlo nelle equazioni come un numero, non ci da altri problemi. Lo si calcola per un certo numero di punti finali $(\vec{x},t)$ e si sommano le rispettive ampiezze (\color{red}non lo si fa per ogni punto, non ho ben chiaro il perché\color{black}).
+	
+	Si può ottenere la stessa funzione di correlazione considerando
+	\begin{equation}
+	\label{C^alpha2}
+		C^\alpha(t)=\lim_{n\to\infty}\frac{1}{n}\sum_{i=1}^{n}\sum_{\vec{x}} \braket{S^{V\phi^i\dagger}(\vec{x},t;0)\gamma^5\Gamma S^{V\eta^i}(\vec{x},t;0)\Gamma\gamma^5}
+	\end{equation}
+	dove la somma sull'indice quadrivettoriale $\mu$ è stata assorbita dentro il propagatore sequenziale
+	\begin{equation}
+		S^{V f}(\vec{x},t;0)_{\nu\rho}^{a b; \ \alpha \beta}=\sum_yS(\vec{x},t;y)_{\nu\lambda}^{a c; \ \alpha \gamma}\Bigl[\sum_\mu V_\mu(y)^{\gamma \delta}f_\mu(y)\Bigr]S(y;0)_{\lambda\rho}^{c b; \ \delta \beta}.
+	\end{equation}
+	La differenza tra \eqref{C^alpha2} e \eqref{C^alpha} è data dai termini di \eqref{C^alpha} in cui $\mu\ne\nu$, che mediano a zero nella gauge di Feynman \color{red}perché in questa gauge il propagatore del fotone è proporzionale a $\delta_{\mu\nu}$ e siccome, quando vado a fare la somma sulle $i$, il prodotto $\phi\eta$ restituisce in media questo propagatore, ecco che gli indici $\mu$ e $\nu$ sono costretti ad essere uguali\color{black}.
+	Questo metodo, quindi, richiede di calcolare solo tre propagatori fermionici (contro i quattro che avremmo dovuto calcolare prima) e di mediare su un grande numero (idealmente infinito) di sorgenti stocastiche $\eta$ (che hanno la funzione di matchare il punto finale del propagatore con il punto di applicazione della corrente sulla seconda linea fermionica).
+	
+	Un metodo meno antiquato consiste nel considerare il fotone come il prodotto tempo ordinato di due potenziali quadrivettore
+	\begin{equation*}
+		G_{\mu\nu}(y_1,y_2)=\braket{A_\mu(y_1)A_\nu(y_2)}
+	\end{equation*}
+	dove i campi $A_\mu$ devono essere generati stocasticamente con probabilità
+	\begin{equation*}
+		P(A)dA\propto\exp{[-A_\mu(y_1) G^{-1}_{\mu\nu}(y_1,y_2)A_\nu(y_2)]}
+	\end{equation*}
+	questo può essere fatto nello spazio dei momenti, dove la distribuzione di probabilità assume una forma locale:
+	\begin{equation*}
+		P(\tilde{A})d\tilde{A}\propto\exp{[-\tilde{A}_\mu(k) \tilde{G}^{-1}_{\mu\nu}(k)\tilde{A}_\nu(k)]}.
+	\end{equation*}
+	Si può quindi effettuare un cambio di variabili locoale
+	\begin{equation*}
+		\tilde{B}_\mu(k)=\sqrt{\tilde{G}^{-1}_{\mu\nu}(k)} \ \tilde{A}_\nu(k),
+	\end{equation*}
+	 e generare ogni componente di $B_\mu$ indipendentemente:
+	 \begin{equation*}
+	 	P(\tilde{B})d\tilde{B}\propto\exp[-\tilde{B}(k)^2].
+	 \end{equation*}
+	Il valore di $A_\mu$ sarà quindi ricavato da
+	\begin{equation*}
+		\tilde{A}_\mu(k)=\sqrt{\tilde{G}_{\mu\nu}(k)} \ \tilde{B}_\nu(k),
+	\end{equation*}
+	dove, nella gauge di Feynman
+	\begin{equation*}
+		\sqrt{\tilde{G}_{\mu\nu}}=\delta_{\mu\nu}\sqrt{\frac{1}{k^2}}.
+	\end{equation*}
+	Seguendo questo metodo, la funzione di correlazione può essere calcolata come
+	\begin{equation}
+	C^\alpha(t)=\lim_{n\to\infty}\frac{1}{n}\sum_{i=1}^{n}\sum_{\vec{x},\mu,\nu} \braket{S^{V_\mu\A_\mu^i\dagger}(\vec{x},t;0)\gamma^5\Gamma S^{V_\nu A^i_\nu}(\vec{x},t;0)\Gamma\gamma^5},
+	\end{equation}
+	oppure, portando la somma sugli indici di Lorentz dentro i singoli propagatori sequenziali, possiamo scriverla nella forma
+	\begin{equation}
+	C^\alpha(t)=\lim_{n\to\infty}\frac{1}{n}\sum_{i=1}^{n}\sum_{\vec{x}} \braket{S^{VA^i\dagger}(\vec{x},t;0)\gamma^5\Gamma S^{VA^i}(\vec{x},t;0)\Gamma\gamma^5},
+	\end{equation}
+	che è vantaggiosa perché adesso dobbiamo calcolare solo due propagatori fermionici: $S(0,y)$ ed il propagatore sequenziale $S^{VA^i}(\vec{x},t;0)$. Questo metodo è più efficente del metodo $\eta-\phi$ \color{red}perché le fluttuazioni statistiche dovute alla presenza di campi stocastici sono minori\color{black}.
+	Questo riguardava i diagrammi con scambio di un fotone tra le linee dei quark di valenza del mesone. Nel caso dei diagrammi disconnessi, la strategia è analoga.
+	\color{red} non sono sicuro sia così, ma io calcolerei la funzione di partizione come
+	\begin{equation*}
+	C^\alpha(t)=\lim_{n\to\infty}\frac{1}{n}\sum_{i=1}^{n}\sum_{\vec{x},\mu,\nu} \braket{S^{V_\mu A_\nu^i\dagger}(\vec{x},t;0)\gamma^5\Gamma S(\vec{x},t;0)\Gamma S(y,y)V_\nu(y)A_\nu(y)\gamma^5}.
+	\end{equation*}
+	Così dovrei calcolare $S(y,y)$, $S(y,0)$ e $S^{V_\mu A_\nu^i\dagger}$\color{black}.
+	
+	
+	\chapter{Analisi dati}
+	In questo capitolo descriverò i metodi statistici utilizzati per l'analisi dei dati, previa introduzione del metodo standard per il calcolo di media ed errore su un set di dati affetti da rumore.
+	Sia dato un set di dati iniziali (o campione) di N variabili $(x_1, x_2, ..., x_N)$ casuali e scorrelate. La media e la deviazione standard campionarie sono date semplicemente da:
+	\begin{equation}
+		\overline{x}=\frac{1}{N} \sum_{i=1}^{N}x_i,
+	\end{equation}
+	\begin{equation}
+	\sigma^2_c=\overline{x^2}-\overline{x}^2.
+	\end{equation}
+	Sia $P(x)$ la distribuzione di probabilità da cui è generato il campione, la media \emph{esatta} dei dati è
+	\begin{equation}
+		\braket{x}=\int x P(x) dx,
+	\end{equation}
+	e la varianza esatta è
+	\begin{equation}\label{varianza_campionaria}
+		\sigma^2=\braket{x^2}-\braket{x}^2.
+	\end{equation}
+	Sebbene l'unico set di dati a nostra disposizione sia $\{x_i\}$, è utile immaginare di ripetere molte volte la raccolta dati così che, se saranno eseguite abbastanza ripetizioni, la media su queste approssimerà bene quella esatta:
+	\begin{equation}
+		\braket{\overline{x}}=\frac{1}{N}\sum_{i=1}^{N}\braket{x_i}=\braket{x}.
+	\end{equation}
+	Questa conclusione è utile perché ci dice che la media campionaria è una stima non distorta (\emph{unbiased}) della media esatta, ovvero la media campionaria, mediata su molte ripetizioni, corrisponde alla media esatta. In assenza di bias, la media diventerà tanto più accurata quanto maggiore è il numero di dati raccolti. Tuttavia, quando è presente una distorsione (o \emph{bias}), la precisione della stima non crescerà con $N$ una volta che l'errore sarà più piccolo del bias.
+	
+	Saremo interessati anche alla varianza della media campionaria mediata su molte ripetizioni, che rappresenta il quadrato dell'errore statistico sulla misura:
+	\begin{equation}\begin{split}\label{errore_esatto}
+			\sigma^2_{\overline{x}} = \braket{\overline{x}^2}-\braket{\overline{x}}^2 &= \frac{1}{N^2}\braket{\sum_{i,j}^{N}x_i x_j} - \frac{1}{N^2}\braket{\sum_{i=1}^{N}x_i}{}^2		 \\&=\frac{N(N-1)}{N^2}\braket{x}^2 + \frac{N}{N^2}\braket{x^2}-\braket{x}^2=\frac{1}{N}(\braket{x^2}-\braket{x}^2)=\frac{\sigma^2}{N}.
+	\end{split}
+	 \end{equation}
+	  $\sigma^2$ nell'ultimo membro di \eqref{errore_esatto} è la varianza della distribuzione $P(x)$ che, in generale, non è nota. Ciò che conosciamo sono solo i dati contenuti nel singolo campione $\{x_i\}$. Perciò dobbiamo puntare ad ottenere una stima dell'errore basandoci solo sulla varianza campionaria calcolata in \eqref{varianza_campionaria}. A tal fine si può calcolare la media su molte ripetizioni della varianza campionaria ottenendo
+	 \begin{equation}\begin{split}
+	 \braket{\sigma^2_c}=\frac{1}{N}\sum_{i=1}^{N}\braket{x_i^2}-\frac{1}{N^2}\sum_{i,j}^{N}\braket{x_i x_j}&=\braket{x^2}-\frac{1}{N^2}\left(N(N-1)\braket{x}^2-N\braket{x^2}\right)\\&=\frac{N-1}{N}\left(\braket{x^2}-\braket{x}^2\right)=\frac{N-1}{N}\sigma^2,
+	 \end{split}\end{equation}
+	 questa equazione ci dice che una buona stima dell'errore \eqref{errore_esatto} è data da:
+	 \begin{equation}\label{stima_errore}
+	 	(\delta\overline{x})^2=\frac{\sigma^2}{N}=\frac{\sigma^2_c}{N-1}.
+	 \end{equation}
+	 Perciò $\delta\overline{x}$ è una stima dell'incertezza sulla media campionaria e la stima della media esatta $\braket{x}$ calcolata dal singolo campione $\{x_i\}$ sarà
+	 \begin{equation}
+	 	\overline{x}\pm\delta\overline{x}=\overline{x}\pm\frac{\sigma_c}{\sqrt{N-1}},
+	 \end{equation}
+	 dove compaiono solo la media e la varianza campionarie.
+	 
+	 Queste stime, però, perdono efficacia in presenza di bias. Si consideri il caso in cui si abbia un unico campione di dati come nel caso precedente ma, differentemente da prima, che non si sia interessati ad una media dei dati del campione $\braket{x}$, bensì ad una qualche funzione della media $f(\braket{x})$. Se si ripercorressero gli stessi passi del caso unbiased per calcolare media ed errore, si cadrebbe in un errore sistematico. In tal caso, infatti, calcoleremmo
+	 \begin{equation}
+	 	\overline{f}=\frac{1}{N}\sum_{i=1}^{N}f(x_i),
+	 \end{equation}
+	 che è una stima per $\braket{f(x)}$ piuttosto che per $f(\braket{x})$. Essa restituisce il risultato esatto solo ripetendo  e mediando la stessa misura su un grande numero di campioni. Al crescere di $N$, infatti, la stima non migliora come si evince dal seguente calcolo
+	 \begin{multline}
+	\braket{\overline{f(x)}-f\left(\braket{x}\right)}=
+	\int P(x)(f(x)-f\left(\braket{x}\right))dx \\
+	=\int P(x)\left[\left(f\left(\braket{x}\right)+f'\left(\braket{x}\right)\left(x-\braket{x}\right)+\frac{1}{2}f''\left(\braket{x}\right)\left(x-\braket{x}\right)^2+\dots\right)-f\left(\braket{x}\right)\right] dx\\
+	=\frac{1}{2}f''\left(\braket{x}\right) \int P(x) \left(x-\braket{x}\right)^2 dx +\dots = \frac{1}{2}f''\sigma^2+\dots \ .
+	 \end{multline}
+	 Vediamo che la distorsione del risultato è di ordine $O(1)$, perciò non diminuisce quando $N\to\infty$. Una stima migliore di $f(\braket{x})$ è sicuramente $f(\overline{x})$:
+	 \begin{multline}
+	 \braket{f(\overline{x})-f\left(\braket{x}\right)}=\int P(x)(f(\overline{x})-f\left(\braket{x}\right))dx\\ = \int P(x)\left[\left(f\left(\braket{x}\right)+f'\left(\braket{x}\right)\left(\overline{x}-\braket{x}\right)+\frac{1}{2}f''\left(\braket{x}\right)\left(\overline{x}-\braket{x}\right)^2+...\right)-f\left(\braket{x}\right)\right] dx\\ =\frac{1}{2}f''\left(\braket{x}\right) \int P(x) \left(\overline{x}-\braket{x}\right)^2 dx +... = \frac{1}{2N}f''\sigma^2+... \ .
+	 \end{multline}
+	 La differenza adesso è di ordine $O(N^{-1})$, perciò, aumentando il numero di elementi nel campione, il risultato sarà sempre più vicino al valore esatto. Poiché, poi, l'errore statistico su $f(\overline{x})$ è di ordine $O(N^{-1/2})$, come vedremo nel seguito, che è molto più grande di $O(N^{-1})$ per grandi $N$, l'errore sistematico su $f(\overline{x})$ può solitamente essere trascurato.
+	 
+	 Il calcolo dell'errore statistico di $f(\overline{x})$ può sempre essere fatto tramite le formule di propagazione degli errori, però, nei casi più complicati in cui ci sono diverse variabili, diventa complicato tener conto di tutti i termini che contribuiscono alla stima dell'incertezza. Per questo motivo ci avvaleremo dei metodi di ricampionamento noti come \emph{jackknife} e \emph{bootstrap} che hanno il vantaggio di tenere automaticamente conto della propagazione degli errori anche nel caso più complicato.
+	 
+	 \section{Jackknife resampling}
+	Si definiscano le \emph{medie jackknife}, $x_i^J$ come la media su tutti i valori del campione eccetto $x_i$:
+	\begin{equation}\label{x^J}
+		x_i^J=\frac{1}{N-1}\sum_{j\ne i}x_j.
+	\end{equation}
+	questo ci permette di definire $f_i^J$, come la funzione $f$ applicata alla $i$-esima media jackknife:
+	\begin{equation}\label{f^J}
+		f_i^J=f(x_i^J).
+	\end{equation}
+	osservando le equazioni \eqref{x^J} e \eqref{f^J} si evince il perché si parla di \emph{ricampionamento}: il metodo consiste nel riorganizzare gli $N$ dati iniziali in $N$ campioni distinti, l'uno dall'altro, dal dato $x_i$ che si è \emph{tagliato fuori} nel costruirli. Tale pratica rende possibile una media sulle $N$ ripetizioni fittizie dell'esperimento così costruite. Si può quindi definire la media sulle ripetizioni (sebbene fittizie)di $f(x_i^J)$ che, come già detto, è una stima per $f(\braket{x})$:
+	\begin{equation}
+		f(\braket{x}) \approx \overline{f^J} = \frac{1}{N}\sum_{i=1}^{N}f_i^J
+	\end{equation}
+	Possiamo calcolare la distorsione di $\overline{f_i^J}$ rispetto a $F(\braket{x})$, come fatto per la media campionaria semplice, prima però osserviamo che
+	\begin{equation*}
+		x_i^J=\frac{1}{N-1}\sum_{j\ne i}x_j = \braket{x}+\frac{1}{N-1}\sum_{j\ne i}(x_j-\braket{x}),
+	\end{equation*}
+	dove l'ultimo termine presenta la somma di tutti gli scarti eccetto uno, pertanto possiamo scrivere, ricordando che $\braket{x}$ rappresenta la media esatta e non quella sul campione,
+	\begin{equation*}
+		x_i^J\approx\braket{x}+\frac{1}{N-1}(x_i-\braket{x}).
+	\end{equation*}
+	Per grandi valori di $N$, il secondo termine è di ordine $O(N^{-1/2})$, pertanto ha senso espandere $f(x_i^J)$ attorno al valor medio di $x$ con la seguente serie di Taylor
+	\begin{multline}\label{f_i^Jmed}
+		\braket{f_i^J}=\left<{f\left(\braket{x}+\frac{1}{N-1}\sum_{j\ne i}(x_j-\braket{x})\right)}\right>\\
+		=f(\braket{x})+\frac{f'(\braket{x})}{N-1}\sum_{j\ne i}\left<x_j-\braket{x}\right>+\frac{f''(\braket{x})}{2(N-1)^2}\sum_{j\ne i}\sum_{k\ne i}\left<x_j-\braket{x}\right>\left<x_k-\braket{x}\right>+\dots\\
+		=f(\braket{x})+\frac{f''(\braket{x})}{2(N-1)}\sigma^2 +\dots \ .
+	\end{multline}
+	L'ultimo membro di \eqref{f_i^Jmed} è indipendente da $i$, pertanto corrisponde alla media degli $f_i^J$, quindi la distorsione sarà
+	\begin{equation}
+		\braket{\overline{f^J}}-f(\braket{x})=\frac{f''(\braket{x})}{2(N-1)}\sigma^2 +\dots \ .
+	\end{equation}
+	Questa è la sistematica che introduciamo considerando la media jackknife della funzione, vedremo adesso che l'errore statistico è di ordine $O(N^{-1/2})$, il che permette di trascurare l'errore sistematico quando N è grande.
+	
+	Si immagini nuovamente di avere a disposizione un grande numero di copie del nostro esperimento e quindi di campioni di dati. Potremmo dire che $f(\braket{x})$ è approssimato da $f(\overline{x})$ ed una stima dell'incertezza è fornita da
+	\begin{equation*}
+		\sigma_{f(\overline{x})}^2=\braket{f(\overline{x})^2}-\braket{f(\overline{x})}^2,
+	\end{equation*}
+	che, sviluppando in serie di Taylor attorno ad $\braket{x}$ ed applicando la \eqref{errore_esatto}, da
+	\begin{equation}
+	\sigma_{f(\overline{x})}^2=\frac{1}{N}f'(\braket{x})^2\sigma^2.
+	\end{equation}
+	Perciò, definendo
+	\begin{equation*}
+		\sigma_{f^J}^2=\overline{{f^J}^2}-\overline{f^J}^2,
+	\end{equation*}
+	si può mediare $\sigma_{f^J}$ su molte ripetizioni e, utilizzando lo sviluppo fatto in \eqref{f_i^Jmed}, si ottiene
+	\begin{equation*}
+	\braket{\sigma_{f^J}^2}=\frac{1}{N(N-1)}f'(\braket{x})^2\sigma^2=\frac{1}{N-1}\sigma_{f(\overline{x})}^2,
+	\end{equation*}
+	per cui da $\sigma_{f^J}$ si ottiene una buona stima per l'errore statistico:
+	\begin{equation}
+	(N-1)\sigma_{f^J}^2=\sigma_{f(\overline{x})}^2.
+	\end{equation}
+	Per cui, il valore di aspettazione calcolato con il metodo jackknife sarà dato da
+	\begin{equation}
+		f(\overline{x})\pm \sigma_{f(\overline{x})} = \overline{f^J} \pm \sqrt{N-1} \ \sigma_{f^J}.
+	\end{equation}
+	Il metodo può essere generalizzato raggruppando i dati, piuttosto che in $N$ gruppi scartando un dato per ogni gruppo, in $N_m$ gruppi scartando $m=N/N_m$ dati per ogni gruppo. La generalizzazione dell'incertezza statistica derivante da questo ricampionamento è, seguendo gli stessi passaggi di prima,
+	\begin{equation}
+		\delta f(\overline{x})_m=\sqrt{N_m-1} \ \sigma_{f^J_m},
+	\end{equation}
+	dove
+	\begin{equation}
+		f^J_m=\frac{1}{N_m}\sum_{i=1}^{N_m}f({x_i^J}_m)
+	\end{equation}
+	ed ${x_i^J}_m$ è la media degli $N-N_m$ dati contenuti nell'$i$-esimo campione fittizio.
+	
+	\section{Bootstrap resampling}
+	Il metodo bootstrap consiste in un ricampionamento randomico dei dati a disposizione. Si immagini di avere il solito insieme di $N$ dati derivanti da un esperimento o una simulzione: un resampling bootstrap si esegue creando $N_b$ campioni fittizi, ognuno di essi contenente $N$ dati estratti casualmente dal dataset iniziale, in modo che ogni estrazione sia indipendente da quelle precedenti. Questo comporta che ogni dato del campione iniziale abbia probabilità $N^{-1}$ di essere selezionato ad ogni estrazione, ovvero è possibile che, all'interno di uno stesso campione così generato, un dato si ripeta più volte o non compaia affatto, in tal modo, la media del numero di apparizioni di ogni dato su tutti i campioni fittizi sarà uguale ad $1$ per $N_b$ molto grande.
+	
+	Si indichi il numero di volte in cui il dato $x_i$ compare all'interno di un singolo campione bootstrap con $n_i$, avendo imposto che ogni insieme contenga esattamente $N$ dati come il dataset iniziale, deve valere
+	\begin{equation}
+		\sum_{i=1}^{N}n_i=N.
+	\end{equation}
+	Si indichi, inoltre, con $p$ la probabilità che $x_i$ venga selezionato in una sola estrazione (essa, come detto, è uguale ad $N^{-1}$ per ogni $i$). La probabilità che esso non venga estratto è data da
+	\begin{equation*}
+		q=1-p.
+	\end{equation*} 
+	Su $N$ estrazioni, il prodotto della probabilità che $x_i$ venga estratto $n_i$ volte per la probabilità che non venga estratto $N-n_i$ volte è dato da
+	\begin{equation*}
+		p^{n_i}q^{N-n_i}
+	\end{equation*}
+	e la probabilità totale è data da questo fattore moltiplicato per i casi favorevoli, ovvero il numero di modi in cui si possono disporre gli $n_i$ $x_i$ in un insieme di $N$ dati totali, ovvero:
+	\begin{equation}
+		P(n_i)=\frac{N!}{n_i!(N-n_i)!}p^{n_i}q^{(N-n_i)}.
+	\end{equation}
+	La media calcolata su tutti i campioni bootstrap del numero di volte in cui è ripetuto $x_i$ nel campione è data da
+	\begin{equation}
+		[n_i]_b=Np=1,
+	\end{equation}
+	mentre la deviazione standard di $n_i$ su un gran numero di campioni fittizi è
+	\begin{equation}
+	[{n_i}^2]_b-{[n_i]_b}^2=N(pq)=1-\frac{1}{N}
+	\end{equation}
+	Le precedenti equazioni si spiegano facilmente. Ad ogni estrazione, $n_i$ è una variabile stocastica che può assumere i valore $0$ (con probabilità $q$) oppure $1$ (con probabilità $p$). La distribuzione che descrive il comportamento di $n_i$, ad ogni lancio, è la distribuzione di Bernoulli per la quale valore di aspettazione e varianza sono date, rispettivamente, da $p$ e $pq$; moltiplicando per il numero di lanci in ogni campione, otteniamo valore di aspettazione e varianza di $n_i$ su un gran numero di campioni bootstrap.
+	
+	
+\end{document}
