@@ -93,22 +93,11 @@ int main(){
     }
     j+=1;
   }
-  ifile.close();
-  
   
   //apro file di output
   ofstream ofile("jacknifemed.txt");
   if(ofile.fail()){cout << "file non aperto\n"; return 1;}
   
-  //genero un elemento della classe Vecclass con l'apposita funzione
-  Vecclass vec_col1;
-  vec_col1.build_Vecclass(all, col1);
-  
-  //media ed errore naive
-  cout << "media ed errore naive " << vec_col1.vector_med() << " +/- " << vec_col1.vector_stdev()/sqrt(all -1) << endl;
-  //cout << naive_med  << " " << naive_err << endl;
-
-
   //faccio il jackknife resampling
   
   double jk[numjack], sum[numjack];
@@ -136,12 +125,14 @@ int main(){
    bootsample[i]/=all;
  }
  
- 
  //genero un elemento di Vecclss con l'apposita funzione
- Vecclass vec_jk, vec_bs;
+ Vecclass vec_jk, vec_bs, vec_col1;
+ vec_col1.build_Vecclass(all, col1);
  vec_jk.build_Vecclass(numjack, jk);
  vec_bs.build_Vecclass(numboot, bootsample);
  
+ //media ed errore naive
+ cout << "media ed errore naive " << vec_col1.vector_med() << " +/- " << vec_col1.vector_stdev()/sqrt(all -1) << endl;
  //calcolo la media e l'errore sui campioni jackknife
  cout << "media ed errore jackknife " << vec_jk.vector_med() << " +/- " << vec_jk.vector_stdev()*sqrt(numjack-1) << endl;
  //media ed errore bootsrap
@@ -157,9 +148,9 @@ int main(){
  //quest'ultima, infatti, presenta un bias che non si riduce per N-->infty; quelle ottenute con il resampling, invece, per N grande si avvicinano sempre più
  //ad f(X) +/- err(f(X)) dove l'erore è calcolato con la formula di propagazione degli errori.
  
- cout << "media naive del quadrato= " << square_vec_col1.vector_med() << " +/- " << square_vec_col1.vector_stdev()/sqrt((double)all-1) /*<< " questo è il calcolo di media ed errore sul quadrato dei dati iniziali"*/ << endl
-      << "media jackknife del quadrato= " << square_vec_jk.vector_med() << " +/- " << square_vec_jk.vector_stdev()*sqrt((double)numjack-1) /*<< " questo è calcolato con il metodo jackknife" */<< endl
-      << "media bootstrap del quadrato= " << square_vec_bs.vector_med() << " +/- " << square_vec_bs.vector_stdev()*sqrt((double)all/(all-1)) /*<< " questo è calcolato con il metodo bootstrap" */<< endl
+ cout << "media naive del quadrato= " << square_vec_col1.vector_med() << " +/- " << square_vec_col1.vector_stdev()/sqrt((double)all-1) << endl
+      << "media jackknife del quadrato= " << square_vec_jk.vector_med() << " +/- " << square_vec_jk.vector_stdev()*sqrt((double)numjack-1) << endl
+      << "media bootstrap del quadrato= " << square_vec_bs.vector_med() << " +/- " << square_vec_bs.vector_stdev()*sqrt((double)all/(all-1)) << endl
       << "quadrato della media e prop. errori = " << square(vec_col1.vector_med()) << " +/- " << 2*vec_col1.vector_med()*vec_col1.vector_stdev()/sqrt((double)all-1) << endl;
  return 0;
 }
