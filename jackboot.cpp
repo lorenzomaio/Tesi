@@ -25,16 +25,16 @@ public:
     }
   }
   //funzione che assegna alle componenti del vettore m_vector di una variabile Vecclass il quadrato delle componenti del vettore m_vector di un altra variabile Vecclass
-    void build_square_Vecclass(const Vecclass &d){
+  void build_square_Vecclass(const Vecclass &d){
     int a=d.m_vector.size();
     double b[a];
     for(int i=0;i<a;i+=1){
       b[i]=square(d.m_vector[i]);
     }
     m_vector.assign(b,b+a);
-   }
+  }
   //funzione che restituisce la media degli elementi del vettore m_vector
-   double vector_med(){
+  double vector_med(){
     m_med=0;
     int a=m_vector.size();
     for(int i=0; i<a;i+=1){
@@ -42,7 +42,7 @@ public:
     }
     m_med/=a;
     return m_med;
-   }
+  }
   //funzione che restituisce la deviazione standard degli elementi del vettore m_vector
   double vector_stdev(){
     int a=m_vector.size();
@@ -58,7 +58,7 @@ public:
     int a=10;
     for(int i=0; i<a; i+=1){
       cout << m_vector[i] << " ";
-      }
+    }
     cout << endl;
   }
 };
@@ -101,14 +101,14 @@ int main(){
   //faccio il jackknife resampling
   
   double jk[numjack], sum[numjack];
- for(int k=0; k<numjack; k+=1){
-   jk[k]=0;
-   sum[k]=0;
- }
- for(int isum=0; isum<all; isum+=1){
-   sum[isum/(all/numjack)]+=col1[isum];
- }
- double tot=0;
+  for(int k=0; k<numjack; k+=1){
+    jk[k]=0;
+    sum[k]=0;
+  }
+  for(int isum=0; isum<all; isum+=1){
+    sum[isum/(all/numjack)]+=col1[isum];
+  }
+  double tot=0;
  for(int t=0; t<numjack; t+=1){tot+=sum[t];}
  for(int ijack=0; ijack<numjack; ijack+=1){
    jk[ijack]=(tot-sum[ijack])/(all-(all/numjack));
@@ -152,7 +152,7 @@ int main(){
       << "media jackknife del quadrato= " << square_vec_jk.vector_med() << " +/- " << square_vec_jk.vector_stdev()*sqrt((double)numjack-1) << endl
       << "media bootstrap del quadrato= " << square_vec_bs.vector_med() << " +/- " << square_vec_bs.vector_stdev()*sqrt((double)all/(all-1)) << endl
       << "quadrato della media e prop. errori = " << square(vec_col1.vector_med()) << " +/- " << 2*vec_col1.vector_med()*vec_col1.vector_stdev()/sqrt((double)all-1) << endl;
-
+ 
  //ofile.close();
  return 0;
 }
