@@ -30,9 +30,7 @@ public:
 
 //costruttore di Vecclass, come argomento devi mettere la dimensione che vuoi assegnare al vettore m_vector
 Vecclass::Vecclass(int a){
-  m_vector.resize(a);
-  for(int i=0; i<a; i+=1){m_vector[i]=0;}
-  
+  m_vector.resize(a);  
 }
 
 //distruttore
@@ -115,28 +113,28 @@ double Vecclass::vector_stdev(void){
 }
 
 int main(){
- //genero un elemento di Vecclss con l'apposita funzione
+  //genero un elemento di Vecclss con l'apposita funzione
   Vecclass vec_ds(all), vec_jk(numjack), vec_bs(numboot);
- vec_ds.build_datasample();
- vec_jk.do_jackknife_resampling(vec_ds);
- vec_bs.do_bootstrap_resampling(vec_ds);
+  vec_ds.build_datasample();
+  vec_jk.do_jackknife_resampling(vec_ds);
+  vec_bs.do_bootstrap_resampling(vec_ds);
+  
+  //medie ed errori nei tre metodi
+  cout << "media ed errore naive " << vec_ds.vector_med() << " +/- " << vec_ds.vector_stdev()/sqrt(all -1) << endl;
+  cout << "media ed errore jackknife " << vec_jk.vector_med() << " +/- " << vec_jk.vector_stdev()*sqrt(numjack-1) << endl;
+  cout << "media ed errore bootstrap " << vec_bs.vector_med() << " +/- " << vec_bs.vector_stdev()*sqrt((double)all/(all-1)) <<endl << endl;
  
- //medie ed errori nei tre metodi
- cout << "media ed errore naive " << vec_ds.vector_med() << " +/- " << vec_ds.vector_stdev()/sqrt(all -1) << endl;
- cout << "media ed errore jackknife " << vec_jk.vector_med() << " +/- " << vec_jk.vector_stdev()*sqrt(numjack-1) << endl;
- cout << "media ed errore bootstrap " << vec_bs.vector_med() << " +/- " << vec_bs.vector_stdev()*sqrt((double)all/(all-1)) <<endl << endl;
- 
- //la funzione che voglio studiare è f(x)=x^2. Faccio il quadrato del dataset iniziale e delle medie sui campioni jackknife e bootstrap
- Vecclass square_vec_ds(all), square_vec_jk(numjack), square_vec_bs(numboot);
- square_vec_ds.build_square_Vecclass(vec_ds);
- square_vec_jk.build_square_Vecclass(vec_jk);
- square_vec_bs.build_square_Vecclass(vec_bs);
- 
- //medie ed errori del quadrato nei tre metodi (il primo è quello che presenta il bias troppo grande), l'ultimo è il calcolo con la propagazione degli errori
- cout << "media naive del quadrato= " << square_vec_ds.vector_med() << " +/- " << square_vec_ds.vector_stdev()/sqrt((double)all-1) << endl
-      << "media jackknife del quadrato= " << square_vec_jk.vector_med() << " +/- " << square_vec_jk.vector_stdev()*sqrt((double)numjack-1) << endl
-      << "media bootstrap del quadrato= " << square_vec_bs.vector_med() << " +/- " << square_vec_bs.vector_stdev()*sqrt((double)all/(all-1)) << endl
-      << "quadrato della media e prop. errori = " << square(vec_ds.vector_med()) << " +/- " << 2*vec_ds.vector_med()*vec_ds.vector_stdev()/sqrt((double)all-1) << endl;
- 
- return 0;
+  //la funzione che voglio studiare è f(x)=x^2. Faccio il quadrato del dataset iniziale e delle medie sui campioni jackknife e bootstrap
+  Vecclass square_vec_ds(all), square_vec_jk(numjack), square_vec_bs(numboot);
+  square_vec_ds.build_square_Vecclass(vec_ds);
+  square_vec_jk.build_square_Vecclass(vec_jk);
+  square_vec_bs.build_square_Vecclass(vec_bs);
+  
+  //medie ed errori del quadrato nei tre metodi (il primo è quello che presenta il bias troppo grande), l'ultimo è il calcolo con la propagazione degli errori
+  cout << "media naive del quadrato= " << square_vec_ds.vector_med() << " +/- " << square_vec_ds.vector_stdev()/sqrt((double)all-1) << endl
+       << "media jackknife del quadrato= " << square_vec_jk.vector_med() << " +/- " << square_vec_jk.vector_stdev()*sqrt((double)numjack-1) << endl
+       << "media bootstrap del quadrato= " << square_vec_bs.vector_med() << " +/- " << square_vec_bs.vector_stdev()*sqrt((double)all/(all-1)) << endl
+       << "quadrato della media e prop. errori = " << square(vec_ds.vector_med()) << " +/- " << 2*vec_ds.vector_med()*vec_ds.vector_stdev()/sqrt((double)all-1) << endl;
+  
+  return 0;
 }
