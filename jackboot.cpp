@@ -6,6 +6,9 @@
 #include <vector>
 using namespace std;
 
+//paramaetri del programma
+int const all=100, numjack=100, numboot=500;
+
 //funzione che restituisce il quadrato di un double
 double square(double m){
   return m*m;
@@ -18,12 +21,55 @@ class Vecclass{
   double m_med;
   
 public:
-  //funzione che assegna alle componenti del vettore m_vector di una variabile Vecclass le componenti di un array inserito come argomento.
-  void build_Vecclass(int a, double c[]){
-    for(int i=0;i<a;i+=1){
-      m_vector.assign(c,c+a);
+  
+  //funzione che estrae i dati dalla prima colonna di un file di testo per generare il campione di dati iniziale
+  void build_datasample(){
+  ifstream ifile("test.txt");
+  if(ifile.fail()){cout << "file non aperto, il tuo datasample è vuoto." << endl;}
+  string line;
+  int j = 1;
+  while (getline (ifile, line)){
+    stringstream ss;
+    ss<<line;
+    double a;
+    ss >> a;
+    if(ss.fail()){cout << "la riga " << j << " del file non va bene, verrà saltata."<< endl << line << endl;}
+    else {m_vector.push_back(a);}
+    j+=1;
+  }
+  ifile.close();
+  }
+  
+  //funzione che crea il resampling jackknife dell'm_vector del Vecclass messo come argomento
+  void do_jackknife_resampling(const Vecclass &d){
+    double sum[numjack];
+    for(int k=0; k<numjack; k+=1){
+      sum[k]=0;
+    }
+    for(int isum=0; isum<all; isum+=1){
+      sum[isum/(all/numjack)]+=d.m_vector[isum];
+    }
+    double tot=0;
+    for(int t=0; t<numjack; t+=1){tot+=sum[t];}
+    for(int ijack=0; ijack<numjack; ijack+=1){
+      m_vector.push_back((tot-sum[ijack])/(all-(all/numjack)));
     }
   }
+  
+  //funzione che crea il resampling bootstrap dell'm_vector del Vecclass messo come argomento
+  void do_bootstrap_resampling(const Vecclass &d){
+    srand(time(NULL));
+    
+    double bootsample[numboot]={0};
+    for(int i=0; i<(all*numboot); i+=1){
+      bootsample[i/all]+=d.m_vector[rand()%100];
+    }
+    for(int i=0; i<numboot; i+=1){
+      bootsample[i]/=all;
+    }
+    m_vector.assign(bootsample,bootsample+numboot);
+  }
+  
   //funzione che assegna alle componenti del vettore m_vector di una variabile Vecclass il quadrato delle componenti del vettore m_vector di un altra variabile Vecclass
   void build_square_Vecclass(const Vecclass &d){
     int a=d.m_vector.size();
@@ -33,6 +79,7 @@ public:
     }
     m_vector.assign(b,b+a);
   }
+  
   //funzione che restituisce la media degli elementi del vettore m_vector
   double vector_med(){
     m_med=0;
@@ -43,6 +90,7 @@ public:
     m_med/=a;
     return m_med;
   }
+  
   //funzione che restituisce la deviazione standard degli elementi del vettore m_vector
   double vector_stdev(){
     int a=m_vector.size();
@@ -53,106 +101,31 @@ public:
     s/=a;
     return sqrt((s-square(m_med)));
   }
-  
-  void print_elements(){
-    int a=10;
-    for(int i=0; i<a; i+=1){
-      cout << m_vector[i] << " ";
-    }
-    cout << endl;
-  }
 };
 
-//parametri del programma
-int const all=100, numjack=100, numboot=500;
-
 int main(){
-  
-  //genero l'array prendendo i dati dalla prima colonna di un file di input
-  
-  double col1[all];
-  ifstream ifile("test.txt");
-  if(ifile.fail()){cout << "file non aperto\n"; return 1;}
-  //i dati della prima riga siano messi come componenti 0 dei miei vettori.
-  string line;
-  int i = 0;
-  int j = 1;
-  while (getline (ifile, line)){
-    stringstream ss;
-    ss<<line;
-    double a;
-    ss >> a;
-    if(ss.fail()){
-      cout << "la riga " << j << " del file non va bene\n";
-      cout << line << "\n";
-    }
-    else{
-      col1[i]=a;
-      
-      i+=1;
-    }
-    j+=1;
-  }
-  ifile.close();
-  //apro file di output
-  // ofstream ofile("jacknifemed.txt");
-  //if(ofile.fail()){cout << "file non aperto\n"; return 1;}
-  
-  //faccio il jackknife resampling
-  
-  double jk[numjack], sum[numjack];
-  for(int k=0; k<numjack; k+=1){
-    jk[k]=0;
-    sum[k]=0;
-  }
-  for(int isum=0; isum<all; isum+=1){
-    sum[isum/(all/numjack)]+=col1[isum];
-  }
-  double tot=0;
- for(int t=0; t<numjack; t+=1){tot+=sum[t];}
- for(int ijack=0; ijack<numjack; ijack+=1){
-   jk[ijack]=(tot-sum[ijack])/(all-(all/numjack));
- }
- 
- //faccio il bootstrap resampling
- srand(time(NULL));
- 
- double bootsample[numboot]={0};
- for(int i=0; i<(all*numboot); i+=1){
-   bootsample[i/all]+=col1[rand()%100];
- }
- for(int i=0; i<numboot; i+=1){
-   bootsample[i]/=all;
- }
- 
  //genero un elemento di Vecclss con l'apposita funzione
- Vecclass vec_jk, vec_bs, vec_col1;
- vec_col1.build_Vecclass(all, col1);
- vec_jk.build_Vecclass(numjack, jk);
- vec_bs.build_Vecclass(numboot, bootsample);
+  Vecclass vec_ds, vec_jk, vec_bs;
+ vec_ds.build_datasample();
+ vec_jk.do_jackknife_resampling(vec_ds);
+ vec_bs.do_bootstrap_resampling(vec_ds);
  
- //media ed errore naive
- cout << "media ed errore naive " << vec_col1.vector_med() << " +/- " << vec_col1.vector_stdev()/sqrt(all -1) << endl;
- //calcolo la media e l'errore sui campioni jackknife
+ //medie ed errori nei tre metodi
+ cout << "media ed errore naive " << vec_ds.vector_med() << " +/- " << vec_ds.vector_stdev()/sqrt(all -1) << endl;
  cout << "media ed errore jackknife " << vec_jk.vector_med() << " +/- " << vec_jk.vector_stdev()*sqrt(numjack-1) << endl;
- //media ed errore bootsrap
  cout << "media ed errore bootstrap " << vec_bs.vector_med() << " +/- " << vec_bs.vector_stdev()*sqrt((double)all/(all-1)) <<endl << endl;
  
- //la funzione che voglio studiare è f(x)=x^2. Costruisco un array dato dal quadrato di col1, uno dato dal quadrato di jk ed uno dal quadrato di bootsample
- Vecclass square_vec_col1, square_vec_jk, square_vec_bs;
- square_vec_col1.build_square_Vecclass(vec_col1);
+ //la funzione che voglio studiare è f(x)=x^2. Faccio il quadrato del dataset iniziale e delle medie sui campioni jackknife e bootstrap
+ Vecclass square_vec_ds, square_vec_jk, square_vec_bs;
+ square_vec_ds.build_square_Vecclass(vec_ds);
  square_vec_jk.build_square_Vecclass(vec_jk);
  square_vec_bs.build_square_Vecclass(vec_bs);
  
- //dal seguente cout si vede che la media fatta con i resampling jacknife e bootstrap approssimano meglio <x>^2 rispetto alla media sui valori originali al quadrato,
- //quest'ultima, infatti, presenta un bias che non si riduce per N-->infty; quelle ottenute con il resampling, invece, per N grande si avvicinano sempre più
- //ad f(X) +/- err(f(X)) dove l'erore è calcolato con la formula di propagazione degli errori.
- 
- cout << "media naive del quadrato= " << square_vec_col1.vector_med() << " +/- " << square_vec_col1.vector_stdev()/sqrt((double)all-1) << endl
+ //medie ed errori del quadrato nei tre metodi (il primo è quello che presenta il bias troppo grande), l'ultimo è il calcolo con la propagazione degli errori
+ cout << "media naive del quadrato= " << square_vec_ds.vector_med() << " +/- " << square_vec_ds.vector_stdev()/sqrt((double)all-1) << endl
       << "media jackknife del quadrato= " << square_vec_jk.vector_med() << " +/- " << square_vec_jk.vector_stdev()*sqrt((double)numjack-1) << endl
       << "media bootstrap del quadrato= " << square_vec_bs.vector_med() << " +/- " << square_vec_bs.vector_stdev()*sqrt((double)all/(all-1)) << endl
-      << "quadrato della media e prop. errori = " << square(vec_col1.vector_med()) << " +/- " << 2*vec_col1.vector_med()*vec_col1.vector_stdev()/sqrt((double)all-1) << endl;
+      << "quadrato della media e prop. errori = " << square(vec_ds.vector_med()) << " +/- " << 2*vec_ds.vector_med()*vec_ds.vector_stdev()/sqrt((double)all-1) << endl;
  
- //ofile.close();
  return 0;
 }
