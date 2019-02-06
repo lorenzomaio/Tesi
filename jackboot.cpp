@@ -93,10 +93,10 @@ int main(){
     }
     j+=1;
   }
-  
+  ifile.close();
   //apro file di output
-  ofstream ofile("jacknifemed.txt");
-  if(ofile.fail()){cout << "file non aperto\n"; return 1;}
+  // ofstream ofile("jacknifemed.txt");
+  //if(ofile.fail()){cout << "file non aperto\n"; return 1;}
   
   //faccio il jackknife resampling
   
@@ -152,5 +152,7 @@ int main(){
       << "media jackknife del quadrato= " << square_vec_jk.vector_med() << " +/- " << square_vec_jk.vector_stdev()*sqrt((double)numjack-1) << endl
       << "media bootstrap del quadrato= " << square_vec_bs.vector_med() << " +/- " << square_vec_bs.vector_stdev()*sqrt((double)all/(all-1)) << endl
       << "quadrato della media e prop. errori = " << square(vec_col1.vector_med()) << " +/- " << 2*vec_col1.vector_med()*vec_col1.vector_stdev()/sqrt((double)all-1) << endl;
+
+ //ofile.close();
  return 0;
 }
