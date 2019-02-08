@@ -13,14 +13,15 @@ int const all=10000, numjack=10000, numboot=10000;
 double square(double m){
   return m*m;
 }
-//funzione sulla quale viene studiata la propagazione degli erori
+//funzione sulla quale viene studiata la propagazione degli errori
 double funzione(double m){
   //return exp(100*m);
-  return (m-0.501)*(m-0.501)*(m-0.501)*(m-0.501)*(m-0.501)*(m-0.501)*(m-0.501)*(m-0.501);
+  //return (m-0.501)*(m-0.501)*(m-0.501)*(m-0.501)*(m-0.501)*(m-0.501)*(m-0.501)*(m-0.501);
   //return cos(1000*m);
   //return m*m*m*m*m*m*m*m*m*m*m*m*m;
   //return cos(m);
   //return sqrt(1/m);
+  return sin(m-0.5)/(m-0.5);
 }
 class  Vecclass{
   vector <double> m_vector;
@@ -151,18 +152,18 @@ double Vecclass::vector_stdev(void){
 
 int main(){
   if(all<numjack){cout << "i parametri del programma sono sbagliati, 'numjack' non può essere più grande di 'all'"; return 0;}
-  //genero un elemento di Vecclss con l'apposita funzione
+  //genero il datasample ed eseguo su di esso i due ricampionamenti
   Vecclass vec_ds(all), vec_jk(numjack), vec_bs(numboot);
   vec_ds.build_datasample();
   vec_jk.do_jackknife_resampling(vec_ds);
   vec_bs.do_bootstrap_resampling(vec_ds);
   
-  //medie ed errori nei tre metodi
+  //medie ed errori nei tre metodi in assenza di bias
   cout << "media ed errore naive " << vec_ds.vector_med() << " +/- " << vec_ds.vector_stdev()/sqrt(all -1) << endl;
   cout << "media ed errore jackknife " << vec_jk.vector_med() << " +/- " << vec_jk.vector_stdev()*sqrt(numjack-1) << endl;
   cout << "media ed errore bootstrap " << vec_bs.vector_med() << " +/- " << vec_bs.vector_stdev()*sqrt((double)all/(all-1)) <<endl << endl;
- 
-  //la funzione che voglio studiare è f(x)=x^2. Faccio il quadrato del dataset iniziale e delle medie sui campioni jackknife e bootstrap
+  
+  //la funzione che voglio studiare è funzione(double) -definita in alto-. La applico al dataset iniziale e alle medie sui campioni jackknife e bootstrap
   Vecclass fun_vec_ds(all), fun_vec_jk(numjack), fun_vec_bs(numboot);
   fun_vec_ds.build_fun_Vecclass(vec_ds, funzione);
   fun_vec_jk.build_fun_Vecclass(vec_jk, funzione);
@@ -172,6 +173,7 @@ int main(){
   cout << "media naive del quadrato= " << fun_vec_ds.vector_med() << " +/- " << fun_vec_ds.vector_stdev()/sqrt((double)all-1) << endl
        << "media jackknife del quadrato= " << fun_vec_jk.vector_med() << " +/- " << fun_vec_jk.vector_stdev()*sqrt((double)numjack-1) << endl
        << "media bootstrap del quadrato= " << fun_vec_bs.vector_med() << " +/- " << fun_vec_bs.vector_stdev()*sqrt((double)all/(all-1)) << endl;
+  //risultato della propagazione degli errori
   vec_ds.fun_prop_err(funzione);
   
   return 0;
