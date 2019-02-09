@@ -1,9 +1,10 @@
-% !TeX spellcheck = en_GB
 \documentclass[LaM]{sapthesis}
 \usepackage{tikz-feynman}
 \usepackage{braket}
 \usepackage{SIunitx}
 \usepackage[italian]{babel}
+\usepackage{slashed}
+
 \begin{document}
 %	\maketitle
 	\chapter{Contesto}
@@ -16,9 +17,9 @@
 	\end{equation}
 	dove $q_1$ e $q_2$ sono i campi dei quark di valenza di $P^+$. Negli anni, sono state calcolate le costanti di decadimento di molti mesoni pseudoscalari e, ormai da tempo, 
 	%? lo so che non ha senso scrivere cose così, ma, come detto, ora sintetizzo poi sistemo%
-	si è raggiunta una precisione di $O(1\%)$ e, al fine di ottenere misure di precisione, è necessario includere gli effetti di \emph{rottura di isospin}, comprese le correzioni elettromagnetiche, in $\Gamma_0$, che, a causa delle divergenze infrarosse, cessa di essere una quantità di per sé osservabile.
+	si è raggiunta una precisione di $O(1\%)$. Al fine di ottenere misure di precisione, è necessario includere gli effetti di \emph{rottura di isospin} e le correzioni elettromagnetiche in $\Gamma_0$, che, a causa delle divergenze infrarosse, cessa di essere una quantità di per sé osservabile.
 	
-	Al fine di ottenere quantità fisiche, la rate di decadimento  $\Gamma_0$, in cui le correzioni elettromagnetiche compaiono solo come fotoni virtuali, devono essere calcolate anche le rate di decadimento di $P^+\to l^+\nu_l\gamma^n$ che indicheremo con $\Gamma_n(\Delta E)$, dove $n$ è il numero di fotoni nello stato finale (che dipende dall'ordine dello sviluppo perturbativo di $\Gamma_0$ in $\alpha_{em}$) e $\Delta E$ indica che tale quantità viene calcolata integrando l'energia dei fotoni nello stato finale da $0$ a $\Delta E$. In tal modo, come osservato nel 1937 da Bloch e Nordsieck, le divergenze infrarosse nella quantità
+	Al fine di ottenere quantità fisiche, insieme alla rate $\Gamma_0$ in cui le correzioni elettromagnetiche compaiono solo come fotoni virtuali, devono essere calcolate anche le rate di decadimento di $P^+\to l^+\nu_l\gamma^n$ che indicheremo con $\Gamma_n(\Delta E)$, dove $n$ è il numero di fotoni nello stato finale (che dipende dall'ordine dello sviluppo perturbativo di $\Gamma_0$ in $\alpha_{em}$) e $\Delta E$ indica che tale quantità viene calcolata integrando l'energia dei fotoni nello stato finale da $0$ a $\Delta E$. In tal modo, come osservato nel 1937 da Bloch e Nordsieck, le divergenze infrarosse nella quantità
 	$$
 	\Gamma(\Delta E) = \Gamma_0 + \Gamma_1(\Delta E) + ... + \Gamma_n(\Delta E)
 	$$
@@ -37,7 +38,7 @@
 	\label{Metodo}
 	\Gamma(\Delta E) = \lim_{V\to \infty}(\Gamma_0 -\Gamma_0^{pt})+\lim_{V\to \infty}(\Gamma_0^{pt} +\Gamma_1^{pt})
 	\end{equation}
-	dove $V$ è il volume del reticolo e $\Gamma_0^{pt}$ è la rate del processo $P^+\to l^+\nu_l$ calcolata perturbativamente in \emph{pointlike approximation} a $O(\alpha_{em})$. I contributi provenienti dai piccoli momenti a $\Gamma_0$ e $\Gamma_0^{pt}$ sono uguali e quindi ognuno dei due termini di \eqref{Metodo} è di per se finito e questo ci permette di trattarli separatamente. Il termine $\Gamma_0^{pt} +\Gamma_1^{pt}$ è calcolato in teoria delle perturbazioni direttamente in volume infinito, mentre gli effetti di QCD in $\Gamma_0$ sono calcolati stocasticamente in una simulazione su reticolo ed il fotone virtuale è incluso esplicitamente nella gauge di Feynman. Per ogni momento del fotone questo è combinato con $\Gamma_0^{pt}$, \color{red}la differenza è sommata sui momenti e infine si prende il limite $V\to\infty$\color{black}.
+	dove $V$ è il volume del reticolo e $\Gamma_0^{pt}$ è la rate del processo $P^+\to l^+\nu_l$ calcolata perturbativamente in \emph{pointlike approximation} a $O(\alpha_{em})$. I contributi provenienti dai piccoli momenti a $\Gamma_0$ e $\Gamma_0^{pt}$ sono uguali e quindi ognuno dei due termini di \eqref{Metodo} è di per se finito e questo ci permette di trattarli separatamente. Il termine $\Gamma_0^{pt} +\Gamma_1^{pt}$ è calcolato in teoria delle perturbazioni direttamente in volume infinito, mentre gli effetti di QCD in $\Gamma_0$ sono calcolati stocasticamente in una simulazione su reticolo ed il fotone virtuale è incluso esplicitamente nella gauge di Feynman. Per ogni momento del fotone questo è combinato con $\Gamma_0^{pt}$, la differenza è sommata sui momenti e infine si prende il limite $V\to\infty$.
 	
 	Focalizziamoci sul primo dei due termini di \eqref{Metodo}. La prima importante semplificazione riguarda il contributo alla rate di decadimento proveniente dalla rinormalizzazione elettromagnetica della funzione d'onda del leptone nello stato finale: non vi è differenza se viene calcolato perturbativamente o non perturbativamente, quindi scompare nella differenza $\Gamma_0 -\Gamma_0^{pt}$. Perciò il calcolo della parte non perturbativa di \eqref{Metodo} ad $O(\alpha_{em})$ si riduce al calcolo di
 	\begin{equation*}
@@ -56,7 +57,26 @@
 	\color{magenta} Questo pezzo era solo per dare un po' di contesto al seguito della discussione, non so se sia opportuno farlo e quanto siano pertinenti i pezzi che parlano delle ampiezze che non mi riguardano.\color{black}
 	
 	\chapter{LQCD}
-	\color{blue} Devo inserire la discretizzazione della QCD e come si calcolano le ampiezze su reticolo, ma per ora scrivo come si calcolano le ampiezze dei diagrammi con lo scambio di un fotone, poi a sta parte ci penso. Dalla tesi di Lubicz posso prendere i propagatori sequenziali, che non mi ricordo se erano descritti anche in quella di Sanfilippo.\color{black}
+	La cromodinamica su reticolo (\emph{LQCD}), è una struttura, introdotta nel 1974 da Kenneth Wilson, che permette di studiare le interazioni forti da principi primi. Si tratta della prima teoria capace di prevedere sia i risultati degli esperimenti di \emph{deep inelastic scattering}, che mostrano i quark meno legati apparire come i gradi di libertà preponderanti nel punto di interazione, sia l'assenza di stati asintotici di quark liberi. Tuttavia, a causa della complessità dei fenomeni non perturbativi a basse energie, è solo dall'avvento dei supercomputer che l'approccio è diventato quantitativamente predittivo. Allo stato dell'arte, la LQCD fornisce risultati per diversi elementi di matrice adronici, complementari a quelli ottenuti tramite approcci fenomenologici, fondamentali per i test del Modello Standard che richiedono grande precisione sia teorica che sperimentale. Essa è diventata importante anche per il calcolo di quantità a "pochi corpi" nucleari e per l'estrapolazione di parte del diagramma di fase della QCD.
+	
+	\section{QCD}
+	La Lagrangiana della cromodinamica quantistica descrive l'interazione tra i campi dei quark ($q$, $\bar{q}$) e i campi gluonici ($A_\mu$). Nel continuo Minkowskiano è data da
+	\begin{equation}
+		L(x)=\bar{q}^A_{a,f}(x)(\slashed{D}_{AB}^{ab}+m_f\delta^{ab}\delta_{AB})q^B_{b,f}(x)+\frac{1}{4}F_{\mu\nu}^AF^{\mu\nu}_A,
+	\end{equation}
+	dove
+	\begin{equation}
+		\slashed{D}=\gamma^\mu_{ab}D^{AB}_\mu=\gamma^\mu(\partial_\mu-ig_sA_\mu^\alpha\Lambda^{AB}_\alpha),
+	\end{equation}
+	\begin{equation}
+		F_{\mu\nu}^A=\partial_\mu A^A_\nu-\partial_\nu A^A_\mu+g_sf^{ABC}A^B_\mu A^c_\nu.
+	\end{equation}
+	Nelle equazioni precedenti, le lettere latine maiuscole $A$, $B$ e $C$ corrono sugli indici di colore, le minuscole $a$ e $b$ corrono sugli indici di Dirac, la $f$ corre sull'indice di flavour; le lettere greche $\mu$ e $\nu$ corrono sugli indici di Lorentz e $\alpha$ sugli indici della rappresentazione aggiunta di $SU(3)$ (di cui le matrici $\Lambda$ sono i generatori - normalizzati in modo che $Tr(\Lambda^A\Lambda^B)=\frac{1}{2}\delta^{AB}$ - ed $f^{ABC}$ le costanti di struttura). Inoltre è utilizzata la convenzione di Einstein per la somma sugli indici ripetuti. 
+	
+	I sopracitati effetti ad alta energia delle interazioni forti sono ben predetti da questa teoria con metodi perturbativi. Questo perché abbiamo solo $6$ sapori di quark, infatti una teoria di Yang-Mills costruita su $SU(3)$ risulta essere asintoticamente libera nell'ultravioletto quando il numero dei sapori è minore di $16$. Tuttavia, già a distanze dell'ordine delle dimensioni nucleari, la costante di accoppiamento dell'interazione forte diventa troppo grande per i calcoli perturbativi. Pertanto i fenomeni che avvengono a tali scale di energie, come il confinamento dei quark, devono essere studiati non perturbativamente. La discretizzazione della teoria su un reticolo spaziotemporale è l'unico \color{red}(?)\color{black} metodo conosciuto per basare lo studio solo su principi primi.
+	\section{Discretizzazione della teoria}
+	
+	
 	\chapter{Come si calcolano i diagrammi}
 	\color{green}(per scrivere questa parte mi sono ispirato a, per non dire che ho copiato, l'appendice A dell'articolo arXiv:1704.06561v2 [hep-lat] 11 Jun 2017)\color{black} Si considerino i diagrammi con lo scambio di un fotone tra linee di quark \color{blue}(diagrammi)\color{black} per un operatore bilineare $\bar{\psi}\Gamma\psi$, dove $\Gamma$ rappresenta le 16 matrici di Dirac e le $\psi$ i campi fermionici. La funzione di correlazione sarà:
 	\begin{equation}
@@ -152,7 +172,7 @@
 	\begin{equation}
 	C^\alpha(t)=\lim_{n\to\infty}\frac{1}{n}\sum_{i=1}^{n}\sum_{\vec{x}} \braket{S^{VA^i\dagger}(\vec{x},t;0)\gamma^5\Gamma S^{VA^i}(\vec{x},t;0)\Gamma\gamma^5},
 	\end{equation}
-	che è vantaggiosa perché adesso dobbiamo calcolare solo due propagatori fermionici: $S(0,y)$ ed il propagatore sequenziale $S^{VA^i}(\vec{x},t;0)$. Questo metodo è più efficente del metodo $\eta-\phi$ \color{red}perché le fluttuazioni statistiche dovute alla presenza di campi stocastici sono minori\color{black}.
+	che è vantaggiosa perché adesso dobbiamo calcolare solo due propagatori fermionici: $S(0,y)$ ed il propagatore sequenziale $S^{VA^i}(\vec{x},t;0)$. Questo metodo è più efficiente del metodo $\eta-\phi$ \color{red}perché le fluttuazioni statistiche dovute alla presenza di campi stocastici sono minori\color{black}.
 	Questo riguardava i diagrammi con scambio di un fotone tra le linee dei quark di valenza del mesone. Nel caso dei diagrammi disconnessi, la strategia è analoga.
 	\color{red} non sono sicuro sia così, ma io calcolerei la funzione di partizione come
 	\begin{equation*}
@@ -290,10 +310,10 @@
 	ed ${x_i^J}_m$ è la media degli $N-N_m$ dati contenuti nell'$i$-esimo campione fittizio.
 	
 	\section{Bootstrap resampling}
-	Il metodo bootstrap consiste in un ricampionamento randomico dei dati a disposizione. Si immagini di avere il solito insieme di $N$ dati derivanti da un esperimento o una simulzione: un resampling bootstrap si esegue creando $N_b$ campioni fittizi, ognuno di essi contenente $N$ dati estratti casualmente dal dataset iniziale, in modo che ogni estrazione sia indipendente da quelle precedenti. Questo comporta che ogni dato del campione iniziale abbia probabilità $N^{-1}$ di essere selezionato ad ogni estrazione, ovvero è possibile che, all'interno di uno stesso campione così generato, un dato si ripeta più volte o non compaia affatto, in tal modo, la media del numero di apparizioni di ogni dato su tutti i campioni fittizi sarà uguale ad $1$ per $N_b$ molto grande.
+	Il metodo bootstrap consiste in un ricampionamento randomico dei dati a disposizione. Si immagini di avere il solito insieme di $N$ dati derivanti da un esperimento o una simulazione: un resampling bootstrap si esegue creando $N_b$ campioni fittizi, ognuno di essi contenente $N$ dati estratti casualmente dal dataset iniziale, in modo che ogni estrazione sia indipendente da quelle precedenti. Questo comporta che ogni dato del campione iniziale abbia probabilità $N^{-1}$ di essere selezionato ad ogni estrazione, ovvero è possibile che, all'interno di uno stesso campione così generato, un dato si ripeta più volte o non compaia affatto, in tal modo, la media del numero di apparizioni di ogni dato su tutti i campioni fittizi sarà uguale ad $1$ per $N_b$ molto grande.
 	
 	Si indichi il numero di volte in cui il dato $x_i$ compare all'interno di un singolo campione bootstrap con $n_i$, avendo imposto che ogni insieme contenga esattamente $N$ dati come il dataset iniziale, deve valere
-	\begin{equation}
+	\begin{equation}\label{constraint}
 		\sum_{i=1}^{N}n_i=N.
 	\end{equation}
 	Si indichi, inoltre, con $p$ la probabilità che $x_i$ venga selezionato in una sola estrazione (essa, come detto, è uguale ad $N^{-1}$ per ogni $i$). La probabilità che esso non venga estratto è data da
@@ -308,15 +328,72 @@
 	\begin{equation}
 		P(n_i)=\frac{N!}{n_i!(N-n_i)!}p^{n_i}q^{(N-n_i)}.
 	\end{equation}
-	La media calcolata su tutti i campioni bootstrap del numero di volte in cui è ripetuto $x_i$ nel campione è data da
+	Altre quantità importanti da calcolare sono il valore di aspettazione di $n_i$ e la sua varianza quando si media su un gran numero di campioni bootstrap (generalmente, con $N_b$ compreso tra $100$ e $500$ i risultati che stiamo per presentare sono ottenuti con buona approssimazione).
+	%qui devo probabilmente citare una reference, tutta questa parte l'ho presa da jackboot.pdf, posso citare quella
+	Se si guarda ad una singola estrazione, si può pensare ad $n_i$ come ad una variabile booleana aleatoria: può assumere solo valore $0$ (con probabilità $q$) o $1$ (con probabilità $p$). Il valore di aspettazione di $n_i$ nella singola estrazione, quando si media su un gran numero di campioni, è  dato da
+	\begin{equation*}
+		{[n_i]_1}_b=(0\cdot q+1\cdot p)
+	\end{equation*}
+	e, dal momento che vogliamo conoscere il valore di aspettazione di $n_i$ su un gran numero di bootstrap dopo $N$ estrazioni indipendenti, abbiamo
 	\begin{equation}
-		[n_i]_b=Np=1,
+		[n_i]_b=Np=1.
 	\end{equation}
-	mentre la deviazione standard di $n_i$ su un gran numero di campioni fittizi è
+	Allo stesso modo possiamo calcolare la varianza
 	\begin{equation}
-	[{n_i}^2]_b-{[n_i]_b}^2=N(pq)=1-\frac{1}{N}
+	[{n_i}^2]_b-{[n_i]_b}^2=N\left((0^2\cdot q+1^2\cdot p)-p^2\right)=Np(1-p)=1-\frac{1}{N}.
 	\end{equation}
-	Le precedenti equazioni si spiegano facilmente. Ad ogni estrazione, $n_i$ è una variabile stocastica che può assumere i valore $0$ (con probabilità $q$) oppure $1$ (con probabilità $p$). La distribuzione che descrive il comportamento di $n_i$, ad ogni lancio, è la distribuzione di Bernoulli per la quale valore di aspettazione e varianza sono date, rispettivamente, da $p$ e $pq$; moltiplicando per il numero di lanci in ogni campione, otteniamo valore di aspettazione e varianza di $n_i$ su un gran numero di campioni bootstrap.
-	
+	Per $N\to \infty$, la distribuzione binomiale tende alla distribuzione di Poisson ed il termine $N^{-1}$ scompare. Un'altra quantità che ci sarà immediatamente utile è
+	\begin{equation*}
+		[n_in_j]_b-[n_i]_b[n_j]_b \ \ \ \ \ per \ i\ne j,
+	\end{equation*}
+	questa differisce dalla deviazione standard di $n_i$ a causa della condizione \eqref{constraint}, infatti questa impone che, sulla singola estrazione, non si possa ottenere $n_i=n_j=1$, per cui abbiamo
+	\begin{equation}
+		[n_in_j]_b-[n_i]_b[n_j]_b=N\left((0\cdot 0) q^2 + 2(0\cdot 1)pq)-p^2\right)=-Np^2=-\frac{1}{N} \ \ \ \ \ per \ i\ne j.
+	\end{equation}
+	Calcoliamo la media bootstrap nel caso più semplice, ovvero in assenza di bias, per poi generalizzare la discussione. Come matto per il metodo jackknife, calcoliamo la media dei dati nell'$i$-esimo campione fittizio
+	\begin{equation}
+		x^\alpha_B=\frac{1}{N}\sum_{i=1}^{N}n^\alpha_ix_i,
+	\end{equation}
+	quindi possiamo calcolare la media e la varianza della media bootstrap di $x$ mediando su tutti i campioni fittizi.
+	\begin{equation}
+		[x_B]_b=\frac{1}{N_b}\sum_{\alpha=1}^{N_b}x^\alpha_B=\frac{1}{N}\sum_{i=1}^{N}[n_i]_bx_i=\overline{x},
+	\end{equation}
+	\begin{multline}
+		\sigma^2_{x_B}=[x_B^2]_b-[x_B]_b^2\\
+		=\left[\frac{1}{N^2}\sum_{i,k}n_i n_k x_ix_k\right]_b-\left[\frac{1}{N}\sum_{i}n_i x_i\right]_b\left[\frac{1}{N}\sum_{k}n_k x_k\right]_b \\
+		=\frac{N-1}{N^3}\sum_{i=1}^{N}x_i^2-\frac{1}{N^3}\sum_{i\ne k}x_ix_k
+	\end{multline}
+	Si possono mediare le ultime due su molte ripetizioni del campione iniziale ed ottenere
+	\begin{equation}
+		\braket{[x_B]_b}=\braket{\overline{x}}=\braket{x},
+	\end{equation}
+	\begin{equation}
+		\braket{\sigma^2_{x_B}}=\frac{N-1}{N^3}(\braket{x^2}-\braket{x}^2)=\frac{N-1}{N^3}\sigma^2=\frac{N-1}{N} {\sigma_{\overline{x}}}^2.
+	\end{equation}
+	Quindi la media e la varianza bootstrap di $x$ sono delle buone stime per media e varianza esatte. Potremo dunque scrivere
+	\begin{equation}
+		x \pm \delta x=[x_B]_b \pm \sqrt{\frac{N}{N-1}} \ \sigma_{\overline{x}}.
+	\end{equation}
+	Questi risultati possono essere estesi in maniera lineare al caso in cui vogliamo avere una stima di $f(x)$ piuttosto che di $x$, proprio come fatto per il metodo jackknife. Perciò possiamo calcolare, per ogni campione fittizio, le quantità
+	\begin{equation}
+		f^\alpha_B=f(x^\alpha_B)
+	\end{equation}
+	che, mediate su tutti i campioni fittizi forniscono una stima per $f(\braket{x})$
+	\begin{equation}
+	f_B=\frac{1}{N_b}\sum_{\alpha}^{N_b}f^\alpha_B.
+	\end{equation}
+	Si ottiene, seguendo i passaggi fatti per il metodo jackknife, il seguente errore su questa stima
+	\begin{equation}
+		\delta f(x)=\sqrt{\frac{N}{N-1}}\ \sigma_{f_B},
+	\end{equation}
+	dove
+	\begin{equation}
+	\sigma^2_{f_B}=\left[f_B^2\right]_b-\left[f_B\right]_b^2.
+	\end{equation}
+	Perciò il metodo bootsrap fornisce la seguente stima
+	\begin{equation}
+	f(x) \pm \delta f(x)=[f_B]_b \pm \sqrt{\frac{N}{N-1}} \ \sigma_{f_B},
+	\end{equation}	
+	che è tanto più accurata quanto più è grande il numero di campioni bootstrap $N_b$ generati.
 	
 \end{document}
